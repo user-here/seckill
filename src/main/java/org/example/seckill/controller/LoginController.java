@@ -1,5 +1,6 @@
 package org.example.seckill.controller;
 
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.example.seckill.service.TUserService;
 import org.example.seckill.vo.LoginVo;
@@ -29,7 +30,7 @@ public class LoginController {
      */
     @RequestMapping("/doLogin")
     @ResponseBody
-    public RespBean doLogin(LoginVo loginVo) {
+    public RespBean doLogin(@Valid LoginVo loginVo) {
         log.info("doLogin");
         return tUserService.doLogin(loginVo);
     }
