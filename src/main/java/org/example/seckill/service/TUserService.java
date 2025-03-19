@@ -1,6 +1,8 @@
 package org.example.seckill.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.example.seckill.pojo.TUser;
 import org.example.seckill.vo.LoginVo;
 import org.example.seckill.vo.RespBean;
@@ -12,5 +14,5 @@ import org.example.seckill.vo.RespBean;
 */
 public interface TUserService extends IService<TUser> {
 
-    RespBean doLogin(LoginVo loginVo);
+    RespBean doLogin(LoginVo loginVo, HttpServletRequest request, HttpServletResponse response);
 }

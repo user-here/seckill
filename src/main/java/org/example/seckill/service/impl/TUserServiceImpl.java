@@ -1,9 +1,14 @@
 package org.example.seckill.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import org.example.seckill.exception.GlobalException;
 import org.example.seckill.mapper.TUserMapper;
 import org.example.seckill.pojo.TUser;
 import org.example.seckill.service.TUserService;
+import org.example.seckill.utils.CookieUtil;
+import org.example.seckill.utils.UUIDUtil;
 import org.example.seckill.vo.LoginVo;
 import org.example.seckill.vo.RespBean;
 import org.example.seckill.vo.RespBeanEnum;
@@ -24,16 +29,20 @@ public class TUserServiceImpl extends ServiceImpl<TUserMapper, TUser>
 
 
     @Override
-    public RespBean doLogin(LoginVo loginVo) {
+    public RespBean doLogin(LoginVo loginVo, HttpServletRequest request, HttpServletResponse response) {
         String username = loginVo.getUsername();
         String password = loginVo.getPassword();
-        if (username == null || password == null) {
+        if (username.isEmpty() || password.isEmpty()) {
             return RespBean.error(RespBeanEnum.LOGIN_ERROR);
         }
         TUser user = tUserMapper.selectById(username);
         if (null == user) {
-            return RespBean.error(RespBeanEnum.LOGIN_ERROR);
+            throw new GlobalException(RespBeanEnum.LOGIN_ERROR);
         }
+        // 生成Cookie
+        String cookieValue = UUIDUtil.uuid();
+        request.getSession().setAttribute(cookieValue, user);
+        CookieUtil.setCookie(request, response, "userTicket", cookieValue);
         return RespBean.success();
     }
 }

@@ -16,6 +16,10 @@ spring:
       idle-timeout: 60000
       max-lifetime: 1800000
 
+  data:
+    redis:
+      host: 119.29.199.150
+
 mybatis-plus:
   mapper-locations: classpath*:mapper/*.xml
   type-aliases-package: org.example.seckill.entity
