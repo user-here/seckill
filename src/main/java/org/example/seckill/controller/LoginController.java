@@ -29,7 +29,7 @@ public class LoginController {
      */
     @RequestMapping("/doLogin")
     @ResponseBody
-    public RespBean doLogin(@Valid LoginVo loginVo) {
+    public RespBean doLogin(LoginVo loginVo) {
         log.info("doLogin");
         return tUserService.doLogin(loginVo);
     }
