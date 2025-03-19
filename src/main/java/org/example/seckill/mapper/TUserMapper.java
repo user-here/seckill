@@ -1,6 +1,7 @@
 package org.example.seckill.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Mapper;
 import org.example.seckill.pojo.TUser;
 
 /**
@@ -9,6 +10,7 @@ import org.example.seckill.pojo.TUser;
 * @createDate 2025-03-18 17:29:58
 * @Entity generator.pojo.TUser
 */
+@Mapper
 public interface TUserMapper extends BaseMapper<TUser> {
 
 }

@@ -2,6 +2,8 @@ package org.example.seckill.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import org.example.seckill.pojo.TUser;
+import org.example.seckill.vo.LoginVo;
+import org.example.seckill.vo.RespBean;
 
 /**
 * @author Olivine
@@ -10,4 +12,5 @@ import org.example.seckill.pojo.TUser;
 */
 public interface TUserService extends IService<TUser> {
 
+    RespBean doLogin(LoginVo loginVo);
 }

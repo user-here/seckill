@@ -12,8 +12,9 @@ import lombok.ToString;
 @Getter
 public enum RespBeanEnum {
     SUCCESS(200, "成功"),
-    ERROR(500, "失败");
-
+    ERROR(500, "失败"),
+    // 登录模块
+    LOGIN_ERROR(500, "用户名或密码错误");
     private final Integer code;
     private final String message;
 }
