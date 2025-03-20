@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -12,7 +13,9 @@ import java.util.Date;
  */
 @TableName(value ="t_user")
 @Data
-public class TUser {
+public class TUser implements Serializable {
+
+    private static final long serialVersionUID = 1L;
     /**
      * 用户ID, 手机号码
      */

@@ -13,6 +13,7 @@ import org.example.seckill.vo.LoginVo;
 import org.example.seckill.vo.RespBean;
 import org.example.seckill.vo.RespBeanEnum;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 /**
@@ -26,6 +27,8 @@ public class TUserServiceImpl extends ServiceImpl<TUserMapper, TUser>
 
     @Autowired
     private TUserMapper tUserMapper;
+    @Autowired
+    private RedisTemplate redisTemplate;
 
 
     @Override
@@ -41,9 +44,23 @@ public class TUserServiceImpl extends ServiceImpl<TUserMapper, TUser>
         }
         // 生成Cookie
         String cookieValue = UUIDUtil.uuid();
-        request.getSession().setAttribute(cookieValue, user);
+        // 将用户信息放到Redis中
+        redisTemplate.opsForValue().set("user:" + cookieValue, user);
+        // request.getSession().setAttribute(cookieValue, user);
         CookieUtil.setCookie(request, response, "userTicket", cookieValue);
         return RespBean.success();
+    }
+
+    @Override
+    public TUser getUserByCookie(String userTicket, HttpServletRequest request, HttpServletResponse response) {
+        if (userTicket == null) {
+            return null;
+        }
+        TUser user = (TUser)redisTemplate.opsForValue().get("user:" + userTicket);
+        if (user != null) {
+            CookieUtil.setCookie(request, response, "userTicket", userTicket);
+        }
+        return user;
     }
 }
 

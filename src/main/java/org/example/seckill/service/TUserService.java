@@ -15,4 +15,6 @@ import org.example.seckill.vo.RespBean;
 public interface TUserService extends IService<TUser> {
 
     RespBean doLogin(LoginVo loginVo, HttpServletRequest request, HttpServletResponse response);
+
+    TUser getUserByCookie(String userTicket, HttpServletRequest request, HttpServletResponse response);
 }
