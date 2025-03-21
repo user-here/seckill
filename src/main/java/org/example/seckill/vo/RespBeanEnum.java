@@ -16,7 +16,8 @@ public enum RespBeanEnum {
     // 登录模块
     LOGIN_ERROR(500, "用户名或密码错误"),
     BIND_ERROR(500, "参数校验异常"),
-    EMPTY_STOCK(500, "库存不足");
+    EMPTY_STOCK(500, "库存不足"),
+    REPEATE_ERROR(500, "不能重复下单");
     private final Integer code;
     private final String message;
 }

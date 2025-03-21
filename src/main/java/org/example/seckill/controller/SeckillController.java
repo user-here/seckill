@@ -1,8 +1,11 @@
 package org.example.seckill.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import org.example.seckill.pojo.TSeckillOrder;
 import org.example.seckill.pojo.TUser;
 import org.example.seckill.service.TGoodsService;
-import org.example.seckill.service.TSeckillGoodsService;
+import org.example.seckill.service.TOrderService;
+import org.example.seckill.service.TSeckillOrderService;
 import org.example.seckill.vo.GoodsVo;
 import org.example.seckill.vo.RespBeanEnum;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +20,9 @@ public class SeckillController {
     @Autowired
     private TGoodsService goodsService;
     @Autowired
-    private TSeckillGoodsService seckillGoodsService;
+    private TSeckillOrderService seckillOrderService;
+    @Autowired
+    private TOrderService orderService;
 
 
     @RequestMapping("/doSeckill")
@@ -31,8 +36,12 @@ public class SeckillController {
             model.addAttribute("errmsg", RespBeanEnum.EMPTY_STOCK.getMessage());
             return "seckillFail";
         }
+        TSeckillOrder seckillOrder = seckillOrderService.getOne(new QueryWrapper<TSeckillOrder>().eq("user_id", user.getId()).eq("goods_id", goodsId));
+        if (seckillOrder != null) {
+            model.addAttribute("errmsg", RespBeanEnum.REPEATE_ERROR.getMessage());
+            return "seckillFail";
+        }
         return "";
-
     }
 
 }
