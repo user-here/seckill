@@ -11,6 +11,7 @@ import org.example.seckill.pojo.TGoods;
 */
 public interface TGoodsMapper extends BaseMapper<TGoods> {
 
+    Object findGoodsVo();
 }
 
 

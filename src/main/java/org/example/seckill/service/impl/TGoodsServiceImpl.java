@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.example.seckill.mapper.TGoodsMapper;
 import org.example.seckill.pojo.TGoods;
 import org.example.seckill.service.TGoodsService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -15,6 +16,13 @@ import org.springframework.stereotype.Service;
 public class TGoodsServiceImpl extends ServiceImpl<TGoodsMapper, TGoods>
     implements TGoodsService {
 
+    @Autowired
+    private TGoodsMapper goodsMapper;
+
+    @Override
+    public Object findGoodsVo() {
+        return goodsMapper.findGoodsVo();
+    }
 }
 
 

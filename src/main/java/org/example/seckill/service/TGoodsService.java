@@ -10,4 +10,5 @@ import org.example.seckill.pojo.TGoods;
 */
 public interface TGoodsService extends IService<TGoods> {
 
+    Object findGoodsVo();
 }

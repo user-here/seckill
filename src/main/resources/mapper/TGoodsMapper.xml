@@ -18,4 +18,20 @@
         id,goods_name,goods_title,goods_img,goods_detail,goods_price,
         goods_stock
     </sql>
+
+    <select id="findGoodsVo" resultType="java.lang.Object">
+        SELECT
+            t_goods.id,
+            t_goods.goods_name,
+            t_goods.goods_title,
+            t_goods.goods_img,
+            t_goods.goods_detail,
+            t_goods.goods_price,
+            t_goods.goods_stock,
+            t_seckill_order.user_id,
+            t_seckill_order.order_id
+        FROM
+            t_goods
+        LEFT JOIN t_seckill_order ON t_goods.id = t_seckill_order.goods_id
+    </select>
 </mapper>

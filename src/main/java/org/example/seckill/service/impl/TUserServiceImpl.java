@@ -36,7 +36,7 @@ public class TUserServiceImpl extends ServiceImpl<TUserMapper, TUser>
         String username = loginVo.getUsername();
         String password = loginVo.getPassword();
         if (username.isEmpty() || password.isEmpty()) {
-            return RespBean.error(RespBeanEnum.LOGIN_ERROR);
+            throw new GlobalException(RespBeanEnum.LOGIN_ERROR);
         }
         TUser user = tUserMapper.selectById(username);
         if (null == user) {

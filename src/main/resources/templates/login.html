@@ -2,16 +2,52 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>登录页面</title>
+    <!-- 引入 jQuery 库 -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        .error { color: red; }
+    </style>
 </head>
 <body>
-<!--    一个简单的登录界面 后端请求到/login//doLogin-->
-<form action="/login/doLogin" method="post">
-    <input type="text" name="username" placeholder="请输入用户名">
-    <input type="password" name="password" placeholder="请输入密码">
-    <input type="submit" value="登录"> </input>
-    </input>
-    </input>
+<h2>登录</h2>
+<!-- 显示错误信息 -->
+<div id="errorMsg" class="error"></div>
+
+<form id="loginForm">
+    <input type="text" name="username" placeholder="请输入用户名" required>
+    <br><br>
+    <input type="password" name="password" placeholder="请输入密码" required>
+    <br><br>
+    <input type="submit" value="登录">
 </form>
+
+<script>
+    $(document).ready(function(){
+        $('#loginForm').submit(function(event){
+            event.preventDefault(); // 阻止表单默认提交
+            var formData = $(this).serialize();
+
+            $.ajax({
+                url: "/login/doLogin",
+                type: "POST",
+                data: formData,
+                success: function(resp) {
+                    // 假设后端返回一个字符串，如果登录成功返回 "goodsList"，否则返回 "login"
+                    if(resp.code === 200){
+                        // 登录成功后重定向到 /goods/toList
+                        window.location.href = "/goods/toList";
+                    } else {
+                        // 登录失败，显示错误信息
+                        $('#errorMsg').text("用户名或密码错误，请重试！");
+                    }
+                },
+                error: function() {
+                    $('#errorMsg').text("请求失败，请稍后重试！");
+                }
+            });
+        });
+    });
+</script>
 </body>
 </html>
