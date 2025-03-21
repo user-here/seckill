@@ -2,6 +2,9 @@ package org.example.seckill.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import org.example.seckill.pojo.TGoods;
+import org.example.seckill.vo.GoodsVo;
+
+import java.util.List;
 
 /**
 * @author Olivine
@@ -9,6 +12,7 @@ import org.example.seckill.pojo.TGoods;
 * @createDate 2025-03-18 17:23:47
 */
 public interface TGoodsService extends IService<TGoods> {
+    List<GoodsVo> findGoodsVo();
 
-    Object findGoodsVo();
+    GoodsVo findGoodsVoByGoodsID(Long goodsID);
 }

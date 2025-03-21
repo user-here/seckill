@@ -2,6 +2,9 @@ package org.example.seckill.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.example.seckill.pojo.TGoods;
+import org.example.seckill.vo.GoodsVo;
+
+import java.util.List;
 
 /**
 * @author Olivine
@@ -11,7 +14,9 @@ import org.example.seckill.pojo.TGoods;
 */
 public interface TGoodsMapper extends BaseMapper<TGoods> {
 
-    Object findGoodsVo();
+    List<GoodsVo> findGoodsVo();
+
+    GoodsVo findGoodsVoByGoodsID(Long goodsID);
 }
 
 
