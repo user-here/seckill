@@ -21,6 +21,9 @@ public class GoodsController {
 
     @RequestMapping("/toList")
     public String toList(Model model, TUser user) {
+        if (user == null){
+            return "login";
+        }
         model.addAttribute("user", user); // 将user添加到model中 视图层可以通过${user}的方式访问user对象
         Object o = goodsService.findGoodsVo();
         model.addAttribute("goodsList", o);
@@ -29,6 +32,9 @@ public class GoodsController {
 
     @RequestMapping("/toDetail/{goodsID}")
     public String toDetail(Model model, TUser user, @PathVariable Long goodsID) {
+        if (user == null) {
+            return "login";
+        }
         model.addAttribute("user", user);
         GoodsVo goodsVo = goodsService.findGoodsVoByGoodsID(goodsID);
         Date startDate = goodsVo.getStartDate();

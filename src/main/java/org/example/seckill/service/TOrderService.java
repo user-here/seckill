@@ -2,6 +2,10 @@ package org.example.seckill.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import org.example.seckill.pojo.TOrder;
+import org.example.seckill.pojo.TSeckillGoods;
+import org.example.seckill.pojo.TUser;
+import org.example.seckill.vo.GoodsVo;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
 * @author cadda smith
@@ -10,4 +14,5 @@ import org.example.seckill.pojo.TOrder;
 */
 public interface TOrderService extends IService<TOrder> {
 
+    TOrder seckill(TUser user, GoodsVo goodsVoByGoodsID);
 }
