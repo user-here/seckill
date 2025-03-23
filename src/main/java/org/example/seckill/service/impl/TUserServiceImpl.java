@@ -16,6 +16,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
+import java.util.concurrent.TimeUnit;
+
 /**
 * @author Olivine
 * @description 针对表【t_user】的数据库操作Service实现
@@ -45,7 +47,7 @@ public class TUserServiceImpl extends ServiceImpl<TUserMapper, TUser>
         // 生成Cookie
         String cookieValue = UUIDUtil.uuid();
         // 将用户信息放到Redis中
-        redisTemplate.opsForValue().set("user:" + cookieValue, user);
+        redisTemplate.opsForValue().set("user:" + cookieValue, user, 180, TimeUnit.MINUTES);
         // request.getSession().setAttribute(cookieValue, user);
         CookieUtil.setCookie(request, response, "userTicket", cookieValue);
         return RespBean.success();
