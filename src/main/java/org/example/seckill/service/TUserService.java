@@ -17,4 +17,6 @@ public interface TUserService extends IService<TUser> {
     RespBean doLogin(LoginVo loginVo, HttpServletRequest request, HttpServletResponse response);
 
     TUser getUserByCookie(String userTicket, HttpServletRequest request, HttpServletResponse response);
+
+    RespBean updatePassword(String userTicket, String password, HttpServletRequest request, HttpServletResponse response);
 }

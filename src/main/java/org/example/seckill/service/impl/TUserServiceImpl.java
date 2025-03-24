@@ -64,6 +64,33 @@ public class TUserServiceImpl extends ServiceImpl<TUserMapper, TUser>
         }
         return user;
     }
+
+    /**
+     * 更新密码
+     * @param userTicket
+     * @param password
+     * @param request
+     * @param response
+     * @return
+     */
+    @Override
+    public RespBean updatePassword(String userTicket, String password, HttpServletRequest request, HttpServletResponse response) {
+
+        TUser user = getUserByCookie(userTicket, request, response);
+        if (null == user) {
+            throw new GlobalException(RespBeanEnum.USER_NOT_EXIST);
+        }
+        // 旁路模式 先更新数据库
+        user.setPassword(password);
+        int result = tUserMapper.updateById(user);
+        // 然后删缓存
+        if (1 == result) {
+            // 删除Redis
+            redisTemplate.delete("user:" + userTicket);
+            return RespBean.success();
+        }
+        return RespBean.error(RespBeanEnum.PASSWORD_UPDATE_ERROR);
+    }
 }
 
 
