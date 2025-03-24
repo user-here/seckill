@@ -4,7 +4,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.example.seckill.pojo.TUser;
 import org.example.seckill.service.TGoodsService;
+import org.example.seckill.vo.DetailVo;
 import org.example.seckill.vo.GoodsVo;
+import org.example.seckill.vo.RespBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
@@ -18,6 +20,7 @@ import org.thymeleaf.spring6.view.ThymeleafViewResolver;
 import org.thymeleaf.util.StringUtils;
 import org.thymeleaf.web.IWebExchange;
 import org.thymeleaf.web.servlet.JakartaServletWebApplication;
+import org.example.seckill.vo.RespBeanEnum;
 
 import java.util.Date;
 import java.util.List;
@@ -65,7 +68,7 @@ public class GoodsController {
         return html;
     }
 
-    @RequestMapping(value = "/toDetail/{goodsID}", produces = "text/html;charset=utf-8")
+    @RequestMapping(value = "/toDetail2/{goodsID}", produces = "text/html;charset=utf-8")
     @ResponseBody
     public String toDetail(Model model, TUser user, @PathVariable Long goodsID, HttpServletRequest request, HttpServletResponse response) {
         if (user == null) {
@@ -113,5 +116,40 @@ public class GoodsController {
             valueOperations.set("goodsDetail:" + goodsID, html, 60, TimeUnit.SECONDS);
         }
         return html;
+    }
+
+    @RequestMapping(value = "/detail/{goodsID}")
+    @ResponseBody
+    public RespBean toDetail(Model model, TUser user, @PathVariable Long goodsID) {
+        if (user == null) {
+            return RespBean.error(RespBeanEnum.LOGIN_ERROR);
+        }
+        GoodsVo goodsVo = goodsService.findGoodsVoByGoodsID(goodsID);
+        Date startDate = goodsVo.getStartDate();
+        Date endDate = goodsVo.getEndDate();
+        Date nowDate = new Date();
+        // 秒杀状态
+        int seckillStatus = 0;
+        // 秒杀倒计时
+        int remainSeconds = 0;
+        if (nowDate.before(startDate)) {
+            // 秒杀未开始
+            seckillStatus = 0;
+            remainSeconds = (int) ((startDate.getTime() - nowDate.getTime()) / 1000);
+        } else if (nowDate.after(endDate)) {
+            // 秒杀已结束
+            seckillStatus = 2;
+            remainSeconds = -1;
+        } else {
+            // 秒杀进行中
+            seckillStatus = 1;
+            remainSeconds = 0;
+        }
+        DetailVo detailVo = new DetailVo();
+        detailVo.setUser(user);
+        detailVo.setGoodsVo(goodsVo);
+        detailVo.setSeckillStatus(seckillStatus);
+        detailVo.setRemainSeconds(remainSeconds);
+        return RespBean.success(detailVo);
     }
 }
