@@ -1,6 +1,7 @@
 package org.example.seckill.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import io.netty.util.internal.StringUtil;
 import org.example.seckill.pojo.TOrder;
 import org.example.seckill.pojo.TSeckillOrder;
 import org.example.seckill.pojo.TUser;
@@ -10,17 +11,22 @@ import org.example.seckill.service.TSeckillOrderService;
 import org.example.seckill.vo.GoodsVo;
 import org.example.seckill.vo.RespBean;
 import org.example.seckill.vo.RespBeanEnum;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.List;
+
 @Controller
 @RequestMapping("/seckill")
-public class SeckillController {
+public class SeckillController implements InitializingBean {
 
     @Autowired
     private TGoodsService goodsService;
@@ -77,6 +83,16 @@ public class SeckillController {
         if (user == null) {
             return RespBean.error(RespBeanEnum.LOGIN_ERROR);
         }
+
+        ValueOperations valueOperations = redisTemplate.opsForValue();
+        // 判断是否重复抢购
+        TSeckillOrder seckillOrder = (TSeckillOrder) valueOperations.get("order:" + user.getId() + ":" + goodsId);
+        // TSeckillOrder seckillOrder = seckillOrderService.getOne(new QueryWrapper<TSeckillOrder>().eq("user_id", user.getId()).eq("goods_id", goodsId));
+        if (seckillOrder != null) {
+            // model.addAttribute("errmsg", RespBeanEnum.REPEATE_ERROR.getMessage());
+            return RespBean.error(RespBeanEnum.REPEATE_ERROR);
+        }
+
         // model.addAttribute("user", user);
         GoodsVo goodsVoByGoodsID = goodsService.findGoodsVoByGoodsID(goodsId);
         // 商品秒杀库存不够 返回秒杀失败
@@ -85,12 +101,7 @@ public class SeckillController {
             return RespBean.error(RespBeanEnum.EMPTY_STOCK);
         }
         // 每个用户同类商品只能秒杀一次 直接从redis中取
-        TSeckillOrder seckillOrder = (TSeckillOrder) redisTemplate.opsForValue().get("order:" + user.getId() + ":" + goodsId);
-        // TSeckillOrder seckillOrder = seckillOrderService.getOne(new QueryWrapper<TSeckillOrder>().eq("user_id", user.getId()).eq("goods_id", goodsId));
-        if (seckillOrder != null) {
-            // model.addAttribute("errmsg", RespBeanEnum.REPEATE_ERROR.getMessage());
-            return RespBean.error(RespBeanEnum.REPEATE_ERROR);
-        }
+
         // 创建订单 ---> 普通订单 + 秒杀订单
         TOrder order = orderService.seckill(user, goodsVoByGoodsID); // 通过用户以及用户想要秒杀的食品id来构建订单
         // model.addAttribute("order", order);
@@ -98,4 +109,15 @@ public class SeckillController {
         return RespBean.success(order);
     }
 
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        // 初始化执行的时候的方法 将商品库存信息直接加载到redis中
+        List<GoodsVo> goodsVoList = goodsService.findGoodsVo();
+        if (CollectionUtils.isEmpty(goodsVoList)) {
+            return;
+        }
+        goodsVoList.forEach(goodsVo -> {
+            redisTemplate.opsForValue().set("seckillGoods:" + goodsVo.getId(), goodsVo.getStockCount());
+        });
+    }
 }
