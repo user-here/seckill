@@ -30,6 +30,27 @@ spring:
           min-idle: 0
           max-wait: 20000 # 最大连接阻塞等待时间
 
+  rabbitmq:
+    host: 119.29.199.150
+    port: 15672
+    username: guest
+    password: guest
+    virtual-host: /
+    listener:
+      simple:
+        auto-startup: true
+        consumer-timeout: 60000
+        concurrency: 10
+        max-concurrency: 18
+        prefetch: 100
+        default-requeue-rejected: true
+      template:
+        retry:
+          enabled: true
+          initial-interval: 1000ms
+          max-attempts: 3
+          max-interval: 1000ms
+
 mybatis-plus:
   mapper-locations: classpath*:mapper/*.xml
   type-aliases-package: org.example.seckill.entity
