@@ -10,4 +10,5 @@ import org.example.seckill.pojo.TSeckillOrder;
 */
 public interface TSeckillOrderService extends IService<TSeckillOrder> {
 
+    Long getSeckillResult(Long id, Long goodsId);
 }

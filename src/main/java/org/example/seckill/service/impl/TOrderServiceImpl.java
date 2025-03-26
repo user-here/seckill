@@ -49,7 +49,8 @@ public class TOrderServiceImpl extends ServiceImpl<TOrderMapper, TOrder>
                 seckillGoods.getStockCount()).eq("id", goodsVoByGoodsID.getId()).gt("stock_count",
                 0));
 
-        if (!update) {
+        if (seckillGoods.getStockCount() < 1) {
+            redisTemplate.opsForValue().set("isStockEmpty:" + goodsVoByGoodsID.getId(), "0");
             return null;
         }
         // 更新数据库

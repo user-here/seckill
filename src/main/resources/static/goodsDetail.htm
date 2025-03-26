@@ -97,7 +97,8 @@
       },
       success: function(data) {
         if (data.code == 200) {
-          window.location.href = "/orderDetail.htm?orderId=" + data.obj.id;
+          // window.location.href = "/orderDetail.htm?orderId=" + data.obj.id;
+          getResult($("goodsId").val());
         } else {
           alert("客户端请求出错");
         }
@@ -106,6 +107,25 @@
         alert("客户端请求出错");
       }
     });
+  }
+
+  function getResult(goodsId) {
+    $.ajax({
+      url: '/seckill/getResult',
+      type: 'GET',
+      data: {
+        goodsId: goodsId
+      },
+      success: function(data) {
+        if (data.code == 200) {
+          if (data.obj == 0) {
+            window.location.href = "/orderDetail.htm?orderId=" + data.obj.id;
+          } else {
+            alert("秒杀失败");
+          }
+        }
+      }
+    })
   }
 
   function render(detail) {
