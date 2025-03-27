@@ -129,7 +129,7 @@ public class SeckillController implements InitializingBean {
      * @param goodsId
      * @return orderId：成功  -1：秒杀失败  0： 排队中
      */
-    @GetMapping("/result")
+    @GetMapping("/getResult")
     @ResponseBody
     public RespBean getSeckillResult(TUser user, Long goodsId) {
         if (user == null || goodsId < 0) {

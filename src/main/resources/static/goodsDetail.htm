@@ -110,22 +110,35 @@
   }
 
   function getResult(goodsId) {
+    g.showLoading();
     $.ajax({
-      url: '/seckill/getResult',
-      type: 'GET',
+      url: "/seckill/getResult",
+      type: "GET",
       data: {
-        goodsId: goodsId
+        goodsId: goodsId,
       },
-      success: function(data) {
+      success: function (data) {
         if (data.code == 200) {
-          if (data.obj == 0) {
-            window.location.href = "/orderDetail.htm?orderId=" + data.obj.id;
+          var result = data.obj;
+          if (result < 0) {
+            layer.msg("对不起，秒杀失败！");
+          } else if (result == 0) {
+            setTimeout(function () {
+              getResult(goodsId);
+            }, 50);
           } else {
-            alert("秒杀失败");
+            layer.confirm("恭喜你，秒杀成功！查看订单？", {btn: ["确定", "取消"]},
+                    function () {
+                      window.location.href = "/orderDetail.html?orderId=" + result;
+                    },
+                    function () {
+                      layer.close();
+                    }
+            );
           }
         }
       }
-    })
+    });
   }
 
   function render(detail) {
